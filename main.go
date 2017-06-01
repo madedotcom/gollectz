@@ -11,7 +11,7 @@ import (
     "fmt"
     "strconv"
     "log"
-    "github.com/bicomsystems/go-libzfs"
+    "github.com/egidijus/go-libzfs"
 )
 
 
