@@ -1,5 +1,5 @@
 # What
-collectd plugin for zfs disk stats using go c lib, this should work well on zfsonlinux.
+collectd plugin for zfs disk stats using go and the go-libzfs C libs that talk directly to zfs apis, this should work well on zfsonlinux.
 things like :
 ```
 used
