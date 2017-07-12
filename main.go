@@ -1,21 +1,29 @@
 package main
 
+// desired output example
+// PUTVAL giddy-hp/zfs-fakepool_fakezfs2/zusedbydataset interval=10 N:8192
+//
+
 import (
 	"context"
+	"fmt"
+	"log"
+	"strconv"
 	"time"
 
 	"collectd.org/api"
 	"collectd.org/exec"
-
-	"fmt"
-	"github.com/egidijus/go-libzfs"
-	"log"
-	"strconv"
+	zfs "github.com/egidijus/go-libzfs"
 )
+
+var properties = []zfs.Prop{
+	zfs.PoolPropSize,
+	zfs.PoolPropFree,
+	zfs.PoolPropAllocated,
+}
 
 func main() {
 
-	var pname string
 	pools, err := zfs.PoolOpenAll()
 	if err != nil {
 		fmt.Printf("terrible things happened")
@@ -23,58 +31,60 @@ func main() {
 		return
 	}
 
-	// println("\tThere is/are ", len(pools), " ZFS pool/s.")
-
-	for _, p := range pools {
-		pname, err = p.Name()
+	for _, thepool := range pools {
+		poolname, err := thepool.Name()
 		if err != nil {
 			log.Print(err)
-			p.Close()
+			thepool.Close()
 			return
 		}
+		stats := getstats(thepool)
+		thepool.Close()
+		sendmetric(poolname, stats)
+	}
 
-		pstate, err := p.State()
+}
+
+//this part fakes the zfs response
+func getstats(thepool zfs.Pool) map[string]int {
+	propertiesAndValues := make(map[string]int)
+
+	for _, property := range properties {
+		propertyAndValue, err := thepool.GetProperty(property)
+		propertyName := zfs.PoolPropertyToName(property)
 		if err != nil {
 			log.Print(err)
-			p.Close()
-			return
+			return propertiesAndValues
 		}
 
-		psize, err := p.GetProperty(zfs.PoolPropSize)
+		// formated pool size
+		numericValue, err := strconv.Atoi(propertyAndValue.Value)
 		if err != nil {
 			log.Print(err)
-			p.Close()
-			return
+			return propertiesAndValues
 		}
+		propertiesAndValues[propertyName] = numericValue
 
-		isize, err := strconv.Atoi(psize.Value)
-		if err != nil {
-			log.Print(err)
-			p.Close()
-			return
-		}
+	}
 
-		pfree, err := p.GetProperty(zfs.PoolPropFree)
-		if err != nil {
-			log.Print(err)
-			p.Close()
-			return
-		}
+	return propertiesAndValues
+}
 
+func sendmetric(poolname string, stats map[string]int) {
+
+	for key, value := range stats {
 		vl := api.ValueList{
 			Identifier: api.Identifier{
 				Host:           exec.Hostname(),
 				Plugin:         "gollectz",
-				PluginInstance: pname,
-				Type:           "gauge",
+				PluginInstance: poolname,
+				Type:           key,
 			},
 			Time:     time.Now(),
 			Interval: exec.Interval(),
-			Values:   []api.Value{api.Gauge(isize)},
+			Values:   []api.Value{api.Gauge(value)},
 		}
 		exec.Putval.Write(context.Background(), &vl)
-
-		println("\tPool: ", pname, " state: ", pstate.String(), "Size", psize.Value, "Free", pfree.Value)
-		p.Close()
 	}
+
 }
