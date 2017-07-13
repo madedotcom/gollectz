@@ -47,8 +47,31 @@ https://github.com/egidijus/go-builder
 
 ### Put the produced binary in collect d plugins directory..
 ```
-/usr/share/collectd
+/usr/share/collectd/
 ```
+
+### Add custom types
+
+```
+vim /usr/share/collectd/custom_types.db
+```
+
+```
+allocated     value:GAUGE:0:U
+size     value:GAUGE:0:U
+free     value:GAUGE:0:U
+```
+
+Tell collectd to read custom types:
+```
+vim /etc/collectd.conf
+```
+```
+TypesDB     "/usr/share/collectd/types.db" "/usr/share/collectd/custom_types.db"
+
+```
+
+
 
 ### Change the permissions so we run this as a root always:
 
