@@ -56,6 +56,8 @@ func getstats(thepool zfs.Pool) map[string]int {
 			log.Print(err)
 			return propertiesAndValues
 		}
+		// print selected properties for fun
+		// fmt.Println(propertyName, " ", propertyAndValue.Value)
 
 		// formated pool size
 		numericValue, err := strconv.Atoi(propertyAndValue.Value)
@@ -63,6 +65,7 @@ func getstats(thepool zfs.Pool) map[string]int {
 			log.Print(err)
 			return propertiesAndValues
 		}
+		// add metrics to map
 		propertiesAndValues[propertyName] = numericValue
 
 	}
