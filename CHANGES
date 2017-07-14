@@ -1,3 +1,6 @@
+Version 0.1.1:
+ - collectd metric naming format infers that - is a separator for plugin instance type, or something, so you have to use _, fixed build scripts, added post install/upgrade/uninstall scripts
+
 Version 0.1.0
  - execute
  - metric types are prefixed with zfs- so we do not break things for anything else that might share a generic type, added versioning script that maybe helps build things, commit hash should be in the RPM
