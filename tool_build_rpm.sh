@@ -2,12 +2,12 @@
 set -ex
 
 THEVERSION=$(git describe --tags --long)
-THEBUILD(){
-    fpm -C build \
+
+fpm -C build/therpm \
     -s dir \
     -t rpm \
     -n collectd-gollectz-zfs \
-    --description "Collectd plugin, writtend in golang, \n uses exec plugin to read disk stats from your ZFS pools." \
+    --description "Collectd plugin, writtend in golang, uses exec plugin to read disk stats from your ZFS pools." \
     -v ${THEVERSION} \
     --url "https://github.com/madedotcom/gollectz" \
     --license "MIT" \
@@ -16,7 +16,5 @@ THEBUILD(){
     -x "*/.git" \
     --verbose \
     --after-install build/scripts/after-install.sh \
-    therpm/=/}
-
-
-THEBUILD
+    --after-remove build/scripts/after-remove.sh \
+    --after-upgrade build/scripts/after_upgrade.sh
