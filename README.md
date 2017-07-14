@@ -80,12 +80,6 @@ chown root:root /usr/share/collectd/gollectz
 chmod u+s /usr/share/collectd/gollectz
 ```
 
-### Add a user to run the plugin as:
-```
-useradd mrzufse
-usermod mrzufse -G root
-```
-
 ### Create a plugin config file:
 ```
 /etc/collectd.d/gollectz.conf
@@ -94,7 +88,7 @@ usermod mrzufse -G root
 ```
 LoadPlugin exec
 <Plugin "exec">
-  Exec "mrzufse" "/usr/share/collectd/gollectz"
+  Exec "nobody" "/usr/share/collectd/gollectz"
 </Plugin>
 ``` 
 
@@ -110,3 +104,40 @@ var properties = []zfs.Prop{
 
 ```
 Be aware that not all values are parsed correctly or at all by this plugin.
+
+
+# How to make RPM
+Use the RPM FPM package builder docker
+
+```
+docker run -it --rm -v $(pwd):/builder/packages/gollectz -w=/builder/packages/gollectz /build rpm-fpm-builder bash
+```
+
+then run this to create package
+```
+./build_rpm.sh
+```
+
+The FPM build script has this..
+
+```
+#!/bin/bash
+set -ex
+export BUILD_NUMBER=10
+
+cd build
+fpm -s dir \
+    -t rpm \
+    -n collectd-gollectz-zfs \
+    --description "golang exec plugin to read disk stats from your ZFS pools" \
+    -v 0.0.${BUILD_NUMBER} \
+    --url "https://github.com/madedotcom/gollectz" \
+    --license "MIT" \
+    -m "Egidijus Ligeika" \
+    --architecture noarch \
+    -x "*/.git" \
+    --verbose \
+    --after-install scripts/after-install.sh \
+    therpm/=/
+
+```
