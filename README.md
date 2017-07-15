@@ -57,9 +57,9 @@ vim /usr/share/collectd/custom_types.db
 ```
 
 ```
-allocated     value:GAUGE:0:U
-size     value:GAUGE:0:U
-free     value:GAUGE:0:U
+zfs_allocated     value:GAUGE:0:U
+zfs_size     value:GAUGE:0:U
+zfs_free     value:GAUGE:0:U
 ```
 
 Tell collectd to read custom types:
