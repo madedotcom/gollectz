@@ -1,0 +1,20 @@
+Version 0.1.1:
+ - collectd metric naming format infers that - is a separator for plugin instance type, or something, so you have to use _, fixed build scripts, added post install/upgrade/uninstall scripts
+
+Version 0.1.0
+ - execute
+ - metric types are prefixed with zfs- so we do not break things for anything else that might share a generic type, added versioning script that maybe helps build things, commit hash should be in the RPM
+ - this produces RPM, but i think i want to add magic sprinkles to use some metadata from GITHUB, so we know the commit hash and maybe even the build machine libs
+ - docs about types of data for collectd, words about how things work"
+ - Merge pull request #3 from madedotcom/alpha-make-it-go
+ -  better
+ - Merge pull request #1 from madedotcom/alpha-make-it-go
+ - better docs
+ - this should produce values that can be used by collectd, as an exec plugin
+ - testing why interval returns a value and an error when called with exec inside the gollectz
+ - more better words in readme, github.com/egidijus/go-libzfs was updated to work with golang >1.6, so if this commit is installed, and you pull d705c4b9f709f036d938a6a51312151d7d6ac94c of github.com/egidijus/go-libzfs, this will compile in golangv1.8.3
+ - more sense
+ - this shoul use the forked go-libzfs that returns numbers for property values, so we can do maths on the values
+ - i am a fool for committing a binary
+ - first commit
+

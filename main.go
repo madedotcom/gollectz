@@ -52,6 +52,7 @@ func getstats(thepool zfs.Pool) map[string]int {
 	for _, property := range properties {
 		propertyAndValue, err := thepool.GetProperty(property)
 		propertyName := zfs.PoolPropertyToName(property)
+		propertyName = "zfs_" + propertyName
 		if err != nil {
 			log.Print(err)
 			return propertiesAndValues
