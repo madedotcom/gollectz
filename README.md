@@ -2,15 +2,9 @@
 collectd plugin for zfs disk stats using go and the go-libzfs C libs that talk directly to zfs apis, this should work well on zfsonlinux.
 things like :
 ```
-used
-available
-usedbydataset
-usedbychildren
-usedbysnapshots
-written
-logicalused
-volsize
-reservatio
+	size,
+	allocated,
+ free,
 ```
 
 This was tested and used on:
