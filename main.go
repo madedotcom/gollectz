@@ -76,16 +76,20 @@ func getstats(thepool zfs.Pool) map[string]int {
 
 func sendmetric(poolname string, stats map[string]int) {
 
+	hostname := exec.Hostname()
+	timenow := time.Now()
+	interval := exec.Interval()
+
 	for key, value := range stats {
 		vl := api.ValueList{
 			Identifier: api.Identifier{
-				Host:           exec.Hostname(),
+				Host:           hostname,
 				Plugin:         "gollectz",
 				PluginInstance: poolname,
 				Type:           key,
 			},
-			Time:     time.Now(),
-			Interval: exec.Interval(),
+			Time:     timenow,
+			Interval: interval,
 			Values:   []api.Value{api.Gauge(value)},
 		}
 		exec.Putval.Write(context.Background(), &vl)
